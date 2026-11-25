@@ -160,6 +160,7 @@ fun OverlayScreen(
     ) { padding ->
         var showCpuUsage by remember { mutableStateOf(prefs.getBoolean("show_cpu_usage", true)) }
         var showGpuUsage by remember { mutableStateOf(prefs.getBoolean("show_gpu_usage", true)) }
+        var showGpuFreq by remember { mutableStateOf(prefs.getBoolean("show_gpu_freq", true)) }
         var showRamUsage by remember { mutableStateOf(prefs.getBoolean("show_ram_usage", true)) }
         var showSwapUsage by remember { mutableStateOf(prefs.getBoolean("show_swap_usage", true)) }
         var showPower by remember { mutableStateOf(prefs.getBoolean("show_power", true)) }
@@ -270,6 +271,16 @@ fun OverlayScreen(
                         onCheckedChange = {
                             showGpuUsage = it
                             prefs.edit().putBoolean("show_gpu_usage", it).apply()
+                            notifyService()
+                        }
+                    )
+                    OverlayToggleItem(
+                        icon = Icons.Default.Timeline,
+                        title = stringResource(com.ivarna.mkm.R.string.gpu_frequency),
+                        checked = showGpuFreq,
+                        onCheckedChange = {
+                            showGpuFreq = it
+                            prefs.edit().putBoolean("show_gpu_freq", it).apply()
                             notifyService()
                         }
                     )
@@ -1073,6 +1084,7 @@ fun ComponentOrderDialog(
         "cpu_usage" to ("CPU Utilization" to Icons.Default.DeveloperBoard),
         "cpu_freq" to ("CPU Frequency" to Icons.Default.Timeline),
         "gpu_usage" to ("GPU Utilization" to Icons.Default.VideogameAsset),
+        "gpu_freq" to ("GPU Frequency" to Icons.Default.Timeline),
         "ram_usage" to ("RAM Usage" to Icons.Default.Dns),
         "swap_usage" to ("Swap Usage" to Icons.Default.SwapCalls),
         "power_usage" to ("Power Usage" to Icons.Default.FlashOn),

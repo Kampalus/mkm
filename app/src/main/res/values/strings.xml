@@ -90,6 +90,7 @@
     <string name="current_clock_speed">Current Clock Speed</string>
     <string name="instability_warning">Changing frequencies and governors may cause system instability or reboots. Proceed with caution.</string>
     <string name="gpu_utilization">GPU UTILIZATION</string>
+    <string name="gpu_frequency">GPU Frequency</string>
     <string name="select_gpu_governor">Select GPU Governor</string>
     <string name="maximum_frequency">Maximum Frequency</string>
     <string name="minimum_frequency">Minimum Frequency</string>

@@ -78,6 +78,7 @@ class OverlayService : Service() {
     private var showCpuUsageState by mutableStateOf(true)
     private var showCpuFreqState by mutableStateOf(true)
     private var showGpuUsageState by mutableStateOf(true)
+    private var showGpuFreqState by mutableStateOf(true)
     private var showRamUsageState by mutableStateOf(true)
     private var showSwapUsageState by mutableStateOf(true)
     private var showPowerUsageState by mutableStateOf(true)
@@ -262,6 +263,7 @@ class OverlayService : Service() {
         showCpuUsageState = prefs.getBoolean("show_cpu_usage", true)
         showCpuFreqState = prefs.getBoolean("show_cpu_freq", true)
         showGpuUsageState = prefs.getBoolean("show_gpu_usage", true)
+        showGpuFreqState = prefs.getBoolean("show_gpu_freq", true)
         showRamUsageState = prefs.getBoolean("show_ram_usage", true)
         showSwapUsageState = prefs.getBoolean("show_swap_usage", true)
         showPowerUsageState = prefs.getBoolean("show_power", true)
@@ -275,7 +277,7 @@ class OverlayService : Service() {
         isGridViewState = prefs.getBoolean("is_grid_view", false)
         gridColumnsState = prefs.getInt("grid_columns", 2)
         isHorizontalState = prefs.getBoolean("is_horizontal", false)
-        val defaultOrder = "cpu_usage,cpu_freq,gpu_usage,ram_usage,swap_usage,power_usage,cpu_temp,battery_temp,battery_percent,fps,net_speed"
+        val defaultOrder = "cpu_usage,cpu_freq,gpu_usage,gpu_freq,ram_usage,swap_usage,power_usage,cpu_temp,battery_temp,battery_percent,fps,net_speed"
         val savedOrder = (prefs.getString("component_order", defaultOrder) ?: defaultOrder).split(",")
         // Ensure any newly added default items (e.g. "fps") are included
         val defaultItems = defaultOrder.split(",")
@@ -411,6 +413,7 @@ class OverlayService : Service() {
                     }
                     updateHistory("cpu_freq", if (freqRatios.isEmpty()) 0f else freqRatios.average().toFloat())
                     updateHistory("gpu_usage", h.gpu.loadPercent)
+                    updateHistory("gpu_freq", if (freqRatios.isEmpty()) 0f else freqRatios.average().toFloat())
                     updateHistory("ram_usage", h.memory.usagePercent)
                     updateHistory("swap_usage", h.swap.usagePercent)
                     updateHistory("power_usage", (kotlin.math.abs(h.power.calibratedPowerW) / 5f).coerceIn(0f, 1f))
@@ -575,7 +578,7 @@ class OverlayService : Service() {
                                         }
                                     }
                                 }
-                                CompactMetric("FREQ", freqStr, 0f, false, Icons.Default.Speed, showIconsOnlyState, metricHistory["cpu_freq"])
+                                CompactMetric("CFREQ", freqStr, 0f, false, Icons.Default.Speed, showIconsOnlyState, metricHistory["cpu_freq"])
                             }
                             if (showGpuUsageState) metricsMap["gpu_usage"] = {
                                 if (showAbsoluteValuesState && absGpuState) {
@@ -586,6 +589,21 @@ class OverlayService : Service() {
                                 } else {
                                     CompactMetric("GPU", "${(homeData.gpu.loadPercent * 100).toInt()}%", homeData.gpu.loadPercent, showProgressBarsState, Icons.Default.VideogameAsset, showIconsOnlyState, metricHistory["gpu_usage"])
                                 }
+                            }
+                            if (showGpuFreqState) metricsMap["gpu_freq"] = {
+                                val freqMhz = parseFreqMHz(homeData.gpu.currentFreq)
+                                val freqStr = formatFreqCompact(freqMhz)
+                                val maxMhz = parseFreqMHz(homeData.gpu.maxFreq)
+
+                                CompactMetric(
+                                    "GFRQ",
+                                    freqStr,
+                                    0f,
+                                    false,
+                                    Icons.Default.Speed,
+                                    showIconsOnlyState,
+                                    metricHistory["gpu_usage"]
+                                )
                             }
                             if (showRamUsageState) metricsMap["ram_usage"] = {
                                 if (showAbsoluteValuesState && absRamState) {

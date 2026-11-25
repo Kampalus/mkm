@@ -90,6 +90,7 @@
     <string name="current_clock_speed">当前时钟速度</string>
     <string name="instability_warning">更改频率和调度器可能导致系统不稳定或重启。请谨慎操作。</string>
     <string name="gpu_utilization">GPU 利用率</string>
+    <string name="gpu_frequency">GPU 频率</string>
     <string name="select_gpu_governor">选择 GPU 调度器</string>
     <string name="maximum_frequency">最大频率</string>
     <string name="minimum_frequency">最小频率</string>
